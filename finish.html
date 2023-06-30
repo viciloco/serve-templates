@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>ViciLoco - Finish Signup</title>
+  <link rel="stylesheet" type="text/css" href="https://viciloco.guessoword.com/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans&family=Montserrat&family=Lato&family=Raleway&family=Roboto&family=Poppins&family=Nunito&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="https://viciloco.guessoword.com/icon.png">
+</head>
+<body>
+  <header>
+    <nav>
+      <ul>
+        <li><img style="width: 200px" src="logo.png" alt="ViciLoco"></li>
+        <li><a href="/">Home</a></li>
+        <li><a href="/">Friends</a></li>
+        <li><a href="https://viciloco.guessoword.com/plus">Plus</a></li>
+        <li><a href="/logout">Logout</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div class="container">
+      <h1><img style="width:120px" src="https://viciloco.guessoword.com/icon.png"></h1>
+      <span>In order to make your experience perfect, please finish adding all details.</span><br>
+      <small><b><i>None of these details are shared or reviewed by anyone.</i></b></small><br><br>
+      <form action="/start-city">
+      <input style="width: 52%" type="text" id="city" name="city" placeholder="City/Town" required><br>
+      <input style="width: 52%" type="text" id="state" name="state" placeholder="State/Province" required><br>
+      <input style="width: 52%" type="text" id="country" name="country" placeholder="Country" required><br>
+      <span>We emailed you a 6-digit verification code. Please enter it below:</span><br>
+      <input style="width: 52%" type="text" id="code" name="code" placeholder="Verification Code" required><br>
+      <span>Please note that you <b>must</b> enter valid information for ViciLoco to perform correctly.</span><br>
+<input style="font-size: 16px" type="submit" value="Start Using ViciLoco"></form>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2023 ViciLoco. All rights reserved.</p>
+    </div>
+  </footer>
+  <script>
+    const cityInput = document.getElementById('city-input');
+    const cityList = document.getElementById('city-list');
+    const selectItems = Array.from(cityList.getElementsByClassName('select-item'));
+
+    cityInput.addEventListener('input', filterCities);
+    cityInput.addEventListener('focus', showCityList);
+    cityInput.addEventListener('blur', hideCityList);
+
+    selectItems.forEach(item => {
+      item.addEventListener('click', selectCity);
+    });
+
+    function filterCities() {
+      const searchTerm = cityInput.value.toLowerCase();
+      selectItems.forEach(item => {
+        const cityName = item.textContent.toLowerCase();
+        if (cityName.includes(searchTerm)) {
+          item.style.display = 'block';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    }
+
+    function showCityList() {
+      cityList.style.display = 'block';
+    }
+
+    function hideCityList() {
+      setTimeout(() => {
+        cityList.style.display = 'none';
+      }, 200);
+    }
+
+    function selectCity(event) {
+      const selectedCity = event.target.textContent;
+      cityInput.value = selectedCity;
+      hideCityList();
+    }
+  </script>
+</body>
+</html>
