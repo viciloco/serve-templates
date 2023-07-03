@@ -24,15 +24,19 @@
     <div class="container">
       <h1><img style="width:120px" src="https://viciloco.guessoword.com/icon.png"></h1>
       <span>In order to make your experience perfect, please finish adding all details.</span><br>
-      <small><b><i>None of these details are shared or reviewed by anyone.</i></b></small><br><br>
+      <small><b><i>None of these details are shared or reviewed by anyone.</i></b><br>Please specify <b>where you live</b>, <b>not the location you associate with or are culturally related to</b>.</small><br><br>
       <form action="/finish-signup-submit" method="post">
       <input style="width: 52%" type="text" id="city" name="city" placeholder="City/Town" required><br>
-      <input style="width: 52%" type="text" id="state" name="state" placeholder="State/Province" required><br>
-      <input style="width: 52%" type="text" id="country" name="country" placeholder="Country" required><br>
+      <div class="select-wrapper">
+        <input style="width: 52%" type="text" id="country-input" class="select-input" placeholder="Country" required>
+        <ul id="country-list" class="select-list">
+        </ul>
+      </div>
+      <a target="_blank" href="https://viciloco.guessoword.com/countries">Is your country not in our list?</a><br><br>
       <span>We emailed you a 6-digit verification code. Please enter it below:</span><br>
       <input style="width: 52%" type="text" id="code" name="code" placeholder="Verification Code" required><br>
       <span>Please note that you <b>must</b> enter valid information for ViciLoco to perform correctly.</span><br>
-<input style="font-size: 16px" type="submit" value="Start Using ViciLoco"></form>
+      <input style="font-size: 16px" type="submit" value="Start Using ViciLoco"></form>
     </div>
   </section>
 
@@ -42,45 +46,78 @@
     </div>
   </footer>
   <script>
-    const cityInput = document.getElementById('city-input');
-    const cityList = document.getElementById('city-list');
-    const selectItems = Array.from(cityList.getElementsByClassName('select-item'));
+    const countryInput = document.getElementById('country-input');
+    const countryList = document.getElementById('country-list');
 
-    cityInput.addEventListener('input', filterCities);
-    cityInput.addEventListener('focus', showCityList);
-    cityInput.addEventListener('blur', hideCityList);
+    // List of UN countries
+    const countries = [
+      "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda", "Argentina", "Armenia", "Australia", "Austria",
+      "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia",
+      "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia",
+      "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Congo", "Costa Rica", "Côte d'Ivoire",
+      "Croatia", "Cuba", "Cyprus", "Czech Republic", "Democratic People's Republic of Korea", "Democratic Republic of the Congo", "Denmark",
+      "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini",
+      "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea",
+      "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland", "Israel", "Italy",
+      "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Kuwait", "Kyrgyzstan", "Lao People's Democratic Republic", "Latvia",
+      "Lebanon", "Lesotho", "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg", "Madagascar", "Malawi", "Malaysia", "Maldives",
+      "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Monaco", "Mongolia", "Montenegro", "Morocco",
+      "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia",
+      "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Qatar",
+      "Republic of Korea", "Republic of Moldova", "Romania", "Russian Federation", "Rwanda", "Saint Kitts and Nevis", "Saint Lucia",
+      "Saint Vincent and the Grenadines", "Samoa", "San Marino", "Sao Tome and Principe", "Saudi Arabia", "Senegal", "Serbia", "Seychelles",
+      "Sierra Leone", "Singapore", "Slovakia", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka",
+      "State of Palestine", "Sudan", "Suriname", "Sweden", "Switzerland", "Syrian Arab Republic", "Tajikistan", "Thailand", "Timor-Leste", "Togo",
+      "Tonga", "Trinidad and Tobago", "Tunisia", "Turkey", "Turkmenistan", "Tuvalu", "Uganda", "Ukraine", "United Arab Emirates",
+      "United Kingdom of Great Britain and Northern Ireland", "United Republic of Tanzania", "United States of America", "Uruguay",
+      "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "Yemen", "Zambia", "Zimbabwe"
+    ];
 
+// Populate the country list
+  countries.forEach(country => {
+    const listItem = document.createElement('li');
+    listItem.textContent = country;
+    listItem.classList.add('select-item'); // Add the "select-item" class to each list item
+    countryList.appendChild(listItem);
+  });
+
+  const selectItems = Array.from(countryList.getElementsByTagName('li'));
+
+  countryInput.addEventListener('input', filterCountries);
+  countryInput.addEventListener('focus', showCountryList);
+  countryInput.addEventListener('blur', hideCountryList);
+
+  selectItems.forEach(item => {
+    item.addEventListener('click', selectCountry);
+  });
+
+  function filterCountries() {
+    const searchTerm = countryInput.value.toLowerCase();
     selectItems.forEach(item => {
-      item.addEventListener('click', selectCity);
+      const countryName = item.textContent.toLowerCase();
+      if (countryName.includes(searchTerm)) {
+        item.style.display = 'block';
+      } else {
+        item.style.display = 'none';
+      }
     });
+  }
 
-    function filterCities() {
-      const searchTerm = cityInput.value.toLowerCase();
-      selectItems.forEach(item => {
-        const cityName = item.textContent.toLowerCase();
-        if (cityName.includes(searchTerm)) {
-          item.style.display = 'block';
-        } else {
-          item.style.display = 'none';
-        }
-      });
-    }
+  function showCountryList() {
+    countryList.style.display = 'block';
+  }
 
-    function showCityList() {
-      cityList.style.display = 'block';
-    }
+  function hideCountryList() {
+    setTimeout(() => {
+      countryList.style.display = 'none';
+    }, 200);
+  }
 
-    function hideCityList() {
-      setTimeout(() => {
-        cityList.style.display = 'none';
-      }, 200);
-    }
-
-    function selectCity(event) {
-      const selectedCity = event.target.textContent;
-      cityInput.value = selectedCity;
-      hideCityList();
-    }
-  </script>
+  function selectCountry(event) {
+    const selectedCountry = event.target.textContent;
+    countryInput.value = selectedCountry;
+    hideCountryList();
+  }
+</script>
 </body>
 </html>
